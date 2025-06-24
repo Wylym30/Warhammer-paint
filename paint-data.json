@@ -10,7 +10,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-const DATA_URL = "https://raw.githubusercontent.com/openai-lab/paint-equivalents/main/paint-data.json"; // à personnaliser si besoin
+https://raw.githubusercontent.com/Wylym30/Warhammer-paint/refs/heads/main/paint-data.json
 
 export default function PaintConverter() {
   const [paintEquivalents, setPaintEquivalents] = useState({});
