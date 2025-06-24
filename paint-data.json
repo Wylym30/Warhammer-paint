@@ -1,32 +1,101 @@
-{
-  "Citadel": {
-    "Abaddon Black": {
-      "Vallejo": "Black",
-      "Army Painter": "Matt Black"
-    },
-    "Mephiston Red": {
-      "Vallejo": "Gory Red",
-      "Army Painter": "Dragon Red"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+
+const DATA_URL = "https://raw.githubusercontent.com/openai-lab/paint-equivalents/main/paint-data.json"; // à personnaliser si besoin
+
+export default function PaintConverter() {
+  const [paintEquivalents, setPaintEquivalents] = useState({});
+  const [allBrands, setAllBrands] = useState([]);
+  const [fromBrand, setFromBrand] = useState("");
+  const [toBrand, setToBrand] = useState("");
+  const [colorName, setColorName] = useState("");
+  const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    fetch(DATA_URL)
+      .then((res) => res.json())
+      .then((data) => {
+        setPaintEquivalents(data);
+        const brands = Object.keys(data);
+        setAllBrands(brands);
+        setFromBrand(brands[0]);
+        setToBrand(brands[1]);
+      })
+      .catch(() => {
+        setResult("Erreur de chargement des données de conversion.");
+      });
+  }, []);
+
+  const handleConvert = () => {
+    const equivalents = paintEquivalents[fromBrand]?.[colorName];
+    if (equivalents && equivalents[toBrand]) {
+      setResult(`${colorName} (${fromBrand}) ≈ ${equivalents[toBrand]} (${toBrand})`);
+    } else {
+      setResult("Aucune correspondance trouvée.");
     }
-  },
-  "Vallejo": {
-    "Black": {
-      "Citadel": "Abaddon Black",
-      "Army Painter": "Matt Black"
-    },
-    "Gory Red": {
-      "Citadel": "Mephiston Red",
-      "Army Painter": "Dragon Red"
-    }
-  },
-  "Army Painter": {
-    "Matt Black": {
-      "Citadel": "Abaddon Black",
-      "Vallejo": "Black"
-    },
-    "Dragon Red": {
-      "Citadel": "Mephiston Red",
-      "Vallejo": "Gory Red"
-    }
-  }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-gradient-to-b from-slate-100 to-white shadow-xl rounded-2xl space-y-6">
+      <h1 className="text-3xl font-extrabold text-center text-slate-800">
+        🎨 Convertisseur de Peintures
+      </h1>
+      {allBrands.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium mb-1">De la marque :</label>
+              <Select value={fromBrand} onValueChange={setFromBrand}>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Marque" /></SelectTrigger>
+                <SelectContent>
+                  {allBrands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Vers la marque :</label>
+              <Select value={toBrand} onValueChange={setToBrand}>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Marque" /></SelectTrigger>
+                <SelectContent>
+                  {allBrands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Nom de la couleur :</label>
+            <Input
+              className="w-full"
+              placeholder="Ex: Mephiston Red"
+              value={colorName}
+              onChange={(e) => setColorName(e.target.value)}
+            />
+          </div>
+          <div className="flex justify-center">
+            <Button className="px-6 py-2 text-lg" onClick={handleConvert}>Convertir</Button>
+          </div>
+        </>
+      )}
+      {result && (
+        <Card className="mt-6 bg-slate-50">
+          <CardContent className="p-6 text-center text-xl font-semibold text-slate-700">
+            {result}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
 }
