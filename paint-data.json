@@ -1,0 +1,32 @@
+{
+  "Citadel": {
+    "Abaddon Black": {
+      "Vallejo": "Black",
+      "Army Painter": "Matt Black"
+    },
+    "Mephiston Red": {
+      "Vallejo": "Gory Red",
+      "Army Painter": "Dragon Red"
+    }
+  },
+  "Vallejo": {
+    "Black": {
+      "Citadel": "Abaddon Black",
+      "Army Painter": "Matt Black"
+    },
+    "Gory Red": {
+      "Citadel": "Mephiston Red",
+      "Army Painter": "Dragon Red"
+    }
+  },
+  "Army Painter": {
+    "Matt Black": {
+      "Citadel": "Abaddon Black",
+      "Vallejo": "Black"
+    },
+    "Dragon Red": {
+      "Citadel": "Mephiston Red",
+      "Vallejo": "Gory Red"
+    }
+  }
+}
